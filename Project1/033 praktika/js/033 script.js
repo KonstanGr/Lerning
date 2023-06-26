@@ -17,7 +17,7 @@ P.S. Здесь есть несколько вариантов решения з
 
 'use strict';
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', () => {//обратились к доку; навесили обработчик события; само сабытие, теперь js срабатывает после прогрузки структуры дом - дерево.
  
     const movieDB = {
         movies: [
@@ -35,8 +35,8 @@ document.addEventListener('DOMContentLoaded', () => {
         poster = document.querySelector('.promo__bg'),
         genre = poster.querySelector('.promo__genre'),
         movieList = document.querySelector('.promo__interactive-list'),
-        addForm = document.querySelector('form.add'),
-        addInput = addForm.querySelector('.adding__input'),
+        addForm = document.querySelector('form.add'),//получаем форму
+        addInput = addForm.querySelector('.adding__input'),//Элементы внутри формы
         checkbox = addForm.querySelector('[type="checkbox"]');
     
     addForm.addEventListener('submit', (event) => {
