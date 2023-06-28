@@ -37,10 +37,10 @@ document.addEventListener('DOMContentLoaded', () => {//обратились к �
         movieList = document.querySelector('.promo__interactive-list'),
         addForm = document.querySelector('form.add'),//получаем форму
         addInput = addForm.querySelector('.adding__input'),//Элементы внутри формы
-        checkbox = addForm.querySelector('[type="checkbox"]');
+        checkbox = addForm.querySelector('[type="checkbox"]');//Элемент гаочка "любимый фильм"
     
     addForm.addEventListener('submit', (event) => {
-        event.preventDefault();
+        event.preventDefault();//Отменяет станадртное поведение браузера;
 
         let newFilm = addInput.value;
         const favorite = checkbox.checked;
@@ -48,20 +48,20 @@ document.addEventListener('DOMContentLoaded', () => {//обратились к �
         if (newFilm) {
 
             if(newFilm.length > 21){
-                newFilm = `${newFilm.substring(0, 22)}...`;
+                newFilm = `${newFilm.substring(0, 22)}...`;//Ограничивает длину названия фильма; Ограничевает добавление пустых строк в список, по нажатию кнопки ПОДТВЕРДИТЬ;Задание 1.
             }
 
             if (favorite) {
-                console.log("Добавляем любимый фильм");
+                console.log("Добавляем любимый фильм");// Выводит в консоль;Задание 4.
             }
 
-            movieDB.movies.push(newFilm);
-            sortArr(movieDB.movies);
+            movieDB.movies.push(newFilm);//Добавляем новый фильм в MovieDB;
+            sortArr(movieDB.movies);//Сортируем названия;
     
-            creatMovieList(movieDB.movies, movieList);
+            creatMovieList(movieDB.movies, movieList);//перебераем фильмы, после помещаем перебранные фильмы в parent;
         }  
        
-        event.target.reset(); 
+        event.target.reset();//Сброс формы;
 
     });
 
@@ -69,16 +69,16 @@ document.addEventListener('DOMContentLoaded', () => {//обратились к �
         adv.forEach (item =>{
             item.remove();
     });
-    };
+    };//Функция удаления рекламы;
 
     const sortArr = (arr) => {
-arr.sort();
+arr.sort();//Функция сортировки;
     };
 
     const makeChanges = () => {
         genre.textContent = "драма";
         poster.style.backgroundImage = 'url("img/bg.jpg")';
-    };
+    };//Функция изменения заднего фона и жанара;
  
     function creatMovieList (films, parent) {
         parent.innerHTML = "";
@@ -88,15 +88,15 @@ arr.sort();
             parent.innerHTML += `<li class="promo__interactive-item">${i + 1} ${film}
             <div class="delete"></div>
         </li>`;
-        });
+        });//Функционал по созданию новых элементов фильмов;
 
-        document.querySelectorAll('.delete').forEach((btn, i) =>{
-            btn.addEventListener('click', () =>{
-                btn.parentElement.remove();
-                movieDB.movies.splice(i, 1);
+        document.querySelectorAll('.delete').forEach((btn, i) =>{//Получаем корзинки; Перебераем, чтобы навесить на разные элементы одно и тоже событие ForEach куда помещаем колбэк функцию: корзина, нумерация;
+            btn.addEventListener('click', () =>{//Обработчик события клика;
+                btn.parentElement.remove();//Удаляем со страницы (с perenta);
+                movieDB.movies.splice(i, 1);//Удаляем из БД; номер/к-во элементов;
 
-                creatMovieList(films, parent);
-            });
+                creatMovieList(films, parent);//Рекурсия; для того чтобы список заного перестраивался;
+            });//Задание 3.
         });
     }
 
@@ -105,5 +105,5 @@ arr.sort();
     makeChanges();
     
     creatMovieList(movieDB.movies, movieList);
-
+//В конце идут вызовы функций;
 });
