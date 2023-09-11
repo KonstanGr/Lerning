@@ -40,7 +40,7 @@ window.addEventListener('DOMContentLoaded', () =>{//назначение гло�
 
     //Timer
 
-    const deadLine = '2023-09-11';
+    const deadLine = '2024-05-20';
 
     function getTimeRemaining(endtime){
         const t = Date.parse(endtime) - Date.parse(new Date()),//разница дедлайна от текущей даты
@@ -95,4 +95,41 @@ window.addEventListener('DOMContentLoaded', () =>{//назначение гло�
  }
 
     setClock('.timer', deadLine);
+
+    //Modal
+
+    const modalTrigger = document.querySelectorAll('[data-modal]'),
+            modal = document.querySelector('.modal'),
+            modalCloseBtn = document.querySelector('[data-close]');//закрыть модальное окно
+
+    modalTrigger.forEach(btn => {//Перебераем
+        btn.addEventListener('click', () =>{//открытие модального окна
+            modal.classList.add('show');//показать окно
+            modal.classList.remove('hide');//скрыть окно
+            // modal.classList.toggle('show');//другой способ
+            document.body.style.overflow = 'hidden';//основная страница фиксирована при появлении модального окна
+        });//модальное окно привезали к нескольким элементам
+    });
+
+    function closeModal () {
+        modal.classList.add('hide');
+        modal.classList.remove('show');
+        // modal.classList.toggle('show');//другой способ
+        document.body.style.overflow = '';//страница приходит в исходное положение после закрытие модального окна
+    }
+    
+    modalCloseBtn.addEventListener('click', closeModal);//закрытие моадльного окна
+         
+    
+    modal.addEventListener('click', (e) => {
+         if (e.target === modal) {
+           closeModal();
+         }  
+    });//обработчик события клика, который закрывает модальное окно при клике в область страницы
+
+    document.addEventListener('keydown', (e) => {
+        if (e.code === "Escape" && modal.classList.contains('show')){
+            closeModal();
+        }
+    });
 });
