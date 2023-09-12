@@ -102,21 +102,25 @@ window.addEventListener('DOMContentLoaded', () =>{//назначение гло�
             modal = document.querySelector('.modal'),
             modalCloseBtn = document.querySelector('[data-close]');//закрыть модальное окно
 
+    function openModal() {
+    modal.classList.add('show');//показать окно
+    modal.classList.remove('hide');//скрыть окно
+    // modal.classList.toggle('show');//другой способ
+    document.body.style.overflow = 'hidden';//основная страница фиксирована при появлении модального окна
+    clearInterval(modalTimerId);//очищаем интервал
+    }//смещение кода Tab + Shift; сместить в право Tab (для себя инфа)
+
+
     modalTrigger.forEach(btn => {//Перебераем
-        btn.addEventListener('click', () =>{//открытие модального окна
-            modal.classList.add('show');//показать окно
-            modal.classList.remove('hide');//скрыть окно
-            // modal.classList.toggle('show');//другой способ
-            document.body.style.overflow = 'hidden';//основная страница фиксирована при появлении модального окна
-        });//модальное окно привезали к нескольким элементам
+        btn.addEventListener('click', openModal);//открытие модального окна
     });
 
     function closeModal () {
-        modal.classList.add('hide');
-        modal.classList.remove('show');
-        // modal.classList.toggle('show');//другой способ
-        document.body.style.overflow = '';//страница приходит в исходное положение после закрытие модального окна
-    }
+    modal.classList.add('hide');
+    modal.classList.remove('show');
+    // modal.classList.toggle('show');//другой способ
+    document.body.style.overflow = '';//страница приходит в исходное положение после закрытие модального окна
+    }   
     
     modalCloseBtn.addEventListener('click', closeModal);//закрытие моадльного окна
          
@@ -132,4 +136,16 @@ window.addEventListener('DOMContentLoaded', () =>{//назначение гло�
             closeModal();
         }
     });
+
+    const modalTimerId = setTimeout(openModal, 3000); //автоматический вызов модального окана
+
+    function showModalByScroll() {
+        if (window.pageYOffset + document.documentElement.clientHeight >= document.documentElement.scrollHeight){
+            openModal();
+            window.removeEventListener('scroll', showModalByScroll);
+        }
+    }  
+
+    window.addEventListener('scroll', showModalByScroll);
 });
+
