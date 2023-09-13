@@ -6,7 +6,7 @@ function User(name, id) {
     this.human = true;
     this.hello = function() {
         console.log(`Hello ${this.name}`);
-    }
+    };
 }//функция конструктор
 
 User.prototype.exit = function(name) {
