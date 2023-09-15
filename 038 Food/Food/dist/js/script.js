@@ -102,15 +102,6 @@ window.addEventListener('DOMContentLoaded', () =>{//назначение гло�
             modal = document.querySelector('.modal'),
             modalCloseBtn = document.querySelector('[data-close]');//закрыть модальное окно
 
-    function openModal() {
-    modal.classList.add('show');//показать окно
-    modal.classList.remove('hide');//скрыть окно
-    // modal.classList.toggle('show');//другой способ
-    document.body.style.overflow = 'hidden';//основная страница фиксирована при появлении модального окна
-    clearInterval(modalTimerId);//очищаем интервал
-    }//смещение кода Tab + Shift; сместить в право Tab (для себя инфа)
-
-
     modalTrigger.forEach(btn => {//Перебераем
         btn.addEventListener('click', openModal);//открытие модального окна
     });
@@ -120,7 +111,15 @@ window.addEventListener('DOMContentLoaded', () =>{//назначение гло�
     modal.classList.remove('show');
     // modal.classList.toggle('show');//другой способ
     document.body.style.overflow = '';//страница приходит в исходное положение после закрытие модального окна
-    }   
+    }
+
+    function openModal() {
+        modal.classList.add('show');//показать окно
+        modal.classList.remove('hide');//скрыть окно
+        // modal.classList.toggle('show');//другой способ
+        document.body.style.overflow = 'hidden';//основная страница фиксирована при появлении модального окна
+        clearInterval(modalTimerId);//очищаем интервал
+        }//смещение кода Tab + Shift; сместить в право Tab (для себя инфа)
     
     modalCloseBtn.addEventListener('click', closeModal);//закрытие моадльного окна
          
@@ -132,20 +131,93 @@ window.addEventListener('DOMContentLoaded', () =>{//назначение гло�
     });//обработчик события клика, который закрывает модальное окно при клике в область страницы
 
     document.addEventListener('keydown', (e) => {
-        if (e.code === "Escape" && modal.classList.contains('show')){
+        if (e.code === "Escape" && modal.classList.contains('show')) {
             closeModal();
         }
     });
 
-    const modalTimerId = setTimeout(openModal, 3000); //автоматический вызов модального окана
-
+    // const modalTimerId = setTimeout(openModal, 3000); //автоматический вызов модального окана
+    // коммент чтобы не всплывало, но перестает работать удаление модального окна после прокрутки вниз страницы, окно постоянно высплывает.
     function showModalByScroll() {
-        if (window.pageYOffset + document.documentElement.clientHeight >= document.documentElement.scrollHeight){
+        if (window.scrollY + document.documentElement.clientHeight >= document.documentElement.scrollHeight) {
             openModal();
             window.removeEventListener('scroll', showModalByScroll);
         }
     }  
 
     window.addEventListener('scroll', showModalByScroll);
+
+    //Используем классы для карточек
+    class MenuCard {
+        constructor(src, alt, title, descr, price, parentSelector, ...classes){
+            this.src = src;
+            this.alt = alt;
+            this.title = title;
+            this.descr = descr;
+            this.price = price;
+            this.classes = classes;
+            this.parent = document.querySelector(parentSelector);
+            this.transfer = 97;
+            this.changeToRUB();
+        }
+    //Методы
+    
+        changeToRUB() {
+            this.price = this.price * this.transfer;
+        }
+
+        render() {
+            const element = document.createElement('div');
+            if(this.classes.length === 0) {//обращаемя к количесву элементов в массиве, если длина = 0, то
+                this.element = 'menu__item';//перезаписываем пустой элемент массива
+                element.classList.add(this.element);//то вставим дэфолтный класс
+            }else{//иначе будет запускаться следующая строка
+                this.classes.forEach(className => element.classList.add(className));
+            }//Реализация защиты от дурака, чтобы сохранить стоковый вид объекта
+            
+            element.innerHTML = `
+                    <img src=${this.src} alt=${this.alt}>
+                    <h3 class="menu__item-subtitle">${this.title}</h3>
+                    <div class="menu__item-descr">${this.descr}</div>
+                    <div class="menu__item-divider"></div>
+                    <div class="menu__item-price">
+                        <div class="menu__item-cost">Цена:</div>
+                        <div class="menu__item-total"><span>${this.price}</span> руб/день</div>
+                    </div>
+                `;
+            this.parent.append(element);
+        }
+    }
+
+    new MenuCard(
+        "img/tabs/vegy.jpg",
+        "vegy",
+        'Меню "Фитнес"',
+        'Меню "Фитнес" - это новый подход к приготовлению блюд: больше свежих овощей и фруктов. Продукт активных и здоровых людей. Это абсолютно новый продукт с оптимальной ценой и высоким качеством!',
+        9,
+        ".menu .container",
+        'menu__item',
+        'big'
+    ).render();
+
+    new MenuCard(
+        "img/tabs/post.jpg",
+        "post",
+        'Меню "Постное"',
+        'Меню “Постное” - это тщательный подбор ингредиентов: полное отсутствие продуктов животного происхождения, молоко из миндаля, овса, кокоса или гречки, правильное количество белков за счет тофу и импортных вегетарианских стейков.',
+        14,
+        ".menu .container",
+        'menu__item'
+    ).render();
+
+    new MenuCard(
+        "img/tabs/elite.jpg",
+        "elite",
+        'Меню “Премиум”',
+        'В меню “Премиум” мы используем не только красивый дизайн упаковки, но и качественное исполнение блюд. Красная рыба, морепродукты, фрукты - ресторанное меню без похода в ресторан!',
+        21,
+        ".menu .container",
+        'menu__item'
+    ).render();
 });
 
