@@ -99,8 +99,7 @@ window.addEventListener('DOMContentLoaded', () =>{//назначение гло�
     //Modal
 
     const modalTrigger = document.querySelectorAll('[data-modal]'),
-            modal = document.querySelector('.modal'),
-            modalCloseBtn = document.querySelector('[data-close]');//закрыть модальное окно
+            modal = document.querySelector('.modal');
 
     modalTrigger.forEach(btn => {//Перебераем
         btn.addEventListener('click', openModal);//открытие модального окна
@@ -119,13 +118,10 @@ window.addEventListener('DOMContentLoaded', () =>{//назначение гло�
         // modal.classList.toggle('show');//другой способ
         document.body.style.overflow = 'hidden';//основная страница фиксирована при появлении модального окна
         clearInterval(modalTimerId);//очищаем интервал
-        }//смещение кода Tab + Shift; сместить в право Tab (для себя инфа)
-    
-    modalCloseBtn.addEventListener('click', closeModal);//закрытие моадльного окна
-         
-    
+        }//смещение кода Tab + Shift; сместить в право Tab (для себя инфа)   
+        
     modal.addEventListener('click', (e) => {
-         if (e.target === modal) {
+         if (e.target === modal || e.target.getAttribute('data-close') == '') {
            closeModal();
          }  
     });//обработчик события клика, который закрывает модальное окно при клике в область страницы
@@ -136,7 +132,7 @@ window.addEventListener('DOMContentLoaded', () =>{//назначение гло�
         }
     });
 
-    // const modalTimerId = setTimeout(openModal, 3000); //автоматический вызов модального окана
+    const modalTimerId = setTimeout(openModal, 50000); //автоматический вызов модального окана
     // коммент чтобы не всплывало, но перестает работать удаление модального окна после прокрутки вниз страницы, окно постоянно высплывает.
     function showModalByScroll() {
         if (window.scrollY + document.documentElement.clientHeight >= document.documentElement.scrollHeight) {
@@ -226,7 +222,7 @@ window.addEventListener('DOMContentLoaded', () =>{//назначение гло�
     const forms = document.querySelectorAll('form');//получаем все формы
 
     const message = {//объект с свойствми сообщений при различных ситуациях
-        loading: 'Загрузка',
+        loading: 'img/form/spinner.svg',
         success: 'Спасибо! Скоро мы с вами свяжемся',
         failure: 'Что-то пошло не так...'
     };
@@ -236,19 +232,23 @@ window.addEventListener('DOMContentLoaded', () =>{//назначение гло�
     });
 
     function postData(form) {//функция постинг данных
-        form.addEventListener('sumbit', (e) => {//добавим обработчик события отправки формы заполенения по нажатию "отправить"
+        form.addEventListener('submit', (e) => {//добавим обработчик события отправки формы заполенения по нажатию "отправить"
             e.preventDefault();//отменить стандартное поведение браузера, чтобы не перезагружался после отправки формы клиентом
 
-            const statusMessage = document.createElement('div');//создаем новый динамический блок на странице HTML
-            statusMessage.classList.add('status');//добавляем класс
-            statusMessage.textContent = message.loading;//помещаем сообщение, которое хотим показать; работает когда у клиента медленный интернет
+            const statusMessage = document.createElement('img');//создаем новый динамический блок на странице HTML
+            statusMessage.src = message.loading;//создали изображение подставили атрибут src
+            statusMessage.style.cssText = `
+                display: block;
+                margin: 0 auto;
+        `;//помещаем сообщение, которое хотим показать; работает когда у клиента медленный интернет
             form.append(statusMessage);//выводить сообщение на форме
+            form.insertAdjacentElement('afterend', statusMessage);//чтобы спинер запускался после формы
 
             const request = new XMLHttpRequest();
             request.open('POST', 'server.php');
 
-            request.setRequestHeader('Content-type', 'application/json');
-            const formData = new FormData(form);
+            request.setRequestHeader('Content-type', 'application/json'); 
+            const formData = new FormData(form);//сбор данных из form
 
             const object = {};//создаем пустой объект
             formData.forEach(function(value, key){//переберем formData и все данные поместим в object и применяем коллбэк функцию
@@ -262,17 +262,40 @@ window.addEventListener('DOMContentLoaded', () =>{//назначение гло�
             request.addEventListener('load', () => {//навешиваем обрабтчик события и отслеживаем load, т.е. конечную загрузку нашего запроса
                 if (request.status === 200) {//если статус хорошо
                     console.log(request.response);
-                    statusMessage.textContent = message.success;//сообщение об успешной операции
+                    showThanksModal(message.success);//сообщение об успешной операции
                     form.reset();//очищаем форму
-                    setTimeout(() => {
-                        statusMessage.remove();
-                    }, 2000);//очистить форму через 2сек.
+                    statusMessage.remove();
                 } else {
-                    statusMessage.textContent = message.failure;//выводим сообщение об ошибке
+                    showThanksModal(message.failure);//выводим сообщение об ошибке
                 }
                 //сброс кэш shift+f5
             });
         });
+    }
+
+    function showThanksModal(message) {
+        const prevModalDialog = document.querySelector('.modal__dialog');//получим блок и поместим в переменную
+
+        prevModalDialog.classList.add('hide');//скроем предыдущий контент
+        openModal();//функция отвечает за открытие модальных окон
+
+
+        const thanksModal = document.createElement('div');//начинаем создавать блок нового контента
+        thanksModal.classList.add('modal__dialog');
+        thanksModal.innerHTML = `
+            <div class="modal__content">
+                <div class="modal__close" data-close>×</div>
+                <div class="modal__title">${message}</div>
+            </div>
+        `;
+
+        document.querySelector('.modal').append(thanksModal);
+        setTimeout(() => {//используем асинхронную операцию
+            thanksModal.remove();
+            prevModalDialog.classList.add('show');
+            prevModalDialog.classList.remove('hide');
+            closeModal();//закроем модальное окно
+        }, 4000);  
     }
 });
 
