@@ -242,12 +242,8 @@ window.addEventListener('DOMContentLoaded', () =>{//назначение гло�
                 margin: 0 auto;
         `;//помещаем сообщение, которое хотим показать; работает когда у клиента медленный интернет
             form.append(statusMessage);//выводить сообщение на форме
-            form.insertAdjacentElement('afterend', statusMessage);//чтобы спинер запускался после формы
-
-            const request = new XMLHttpRequest();
-            request.open('POST', 'server.php');
-
-            request.setRequestHeader('Content-type', 'application/json'); 
+            form.insertAdjacentElement('afterend', statusMessage);//чтобы спинер запускался после формы        
+ 
             const formData = new FormData(form);//сбор данных из form
 
             const object = {};//создаем пустой объект
@@ -255,21 +251,23 @@ window.addEventListener('DOMContentLoaded', () =>{//назначение гло�
                 object[key] = value;//обращаемся к объекту
             });
 
-            const json = JSON.stringify(object);//используем конвертацию json
-
-            request.send(json);//отправка данных на сервер
-
-            request.addEventListener('load', () => {//навешиваем обрабтчик события и отслеживаем load, т.е. конечную загрузку нашего запроса
-                if (request.status === 200) {//если статус хорошо
-                    console.log(request.response);
-                    showThanksModal(message.success);//сообщение об успешной операции
-                    form.reset();//очищаем форму
-                    statusMessage.remove();
-                } else {
-                    showThanksModal(message.failure);//выводим сообщение об ошибке
-                }
-                //сброс кэш shift+f5
+            fetch('server.php', {
+                method: "POST",
+                headers: {
+                    'Content-type': 'application/json'
+                },
+                body: JSON.stringify(object)
+            }).then(data => data.text())
+            .then(data => {
+                console.log(data);
+                showThanksModal(message.success);//сообщение об успешной операции
+                statusMessage.remove();
+            }).catch(() => {
+                showThanksModal(message.failure);//выводим сообщение об ошибке
+            }).finally(() => {
+                form.reset();//очищаем форму
             });
+ 
         });
     }
 
@@ -297,5 +295,15 @@ window.addEventListener('DOMContentLoaded', () =>{//назначение гло�
             closeModal();//закроем модальное окно
         }, 4000);  
     }
+
+    fetch('https://jsonplaceholder.typicode.com/posts', {
+        method: "POST",
+        body: JSON.stringify({name: 'Konsta'}),
+        headers: {
+            'Content-type': 'application/json'
+        }
+    })
+      .then(response => response.json())//возвращает промис
+      .then(json => console.log(json));
 });
 
