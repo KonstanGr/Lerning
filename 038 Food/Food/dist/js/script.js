@@ -185,38 +185,23 @@ window.addEventListener('DOMContentLoaded', () =>{//назначение гло�
         }
     }
 
-    new MenuCard(
-        "img/tabs/vegy.jpg",
-        "vegy",
-        'Меню "Фитнес"',
-        'Меню "Фитнес" - это новый подход к приготовлению блюд: больше свежих овощей и фруктов. Продукт активных и здоровых людей. Это абсолютно новый продукт с оптимальной ценой и высоким качеством!',
-        9,
-        ".menu .container",
-        'menu__item',
-        'big'
-    ).render();
+    const getResource = async (url, data) => {
+        const res = await fetch(url);
 
-    new MenuCard(
-        "img/tabs/post.jpg",
-        "post",
-        'Меню "Постное"',
-        'Меню “Постное” - это тщательный подбор ингредиентов: полное отсутствие продуктов животного происхождения, молоко из миндаля, овса, кокоса или гречки, правильное количество белков за счет тофу и импортных вегетарианских стейков.',
-        14,
-        ".menu .container",
-        'menu__item'
-    ).render();
+        if(!res.ok) {
+            throw new Error(`Could not fetch ${url}, status: ${res.status}`);
+        }
 
-    new MenuCard(
-        "img/tabs/elite.jpg",
-        "elite",
-        'Меню “Премиум”',
-        'В меню “Премиум” мы используем не только красивый дизайн упаковки, но и качественное исполнение блюд. Красная рыба, морепродукты, фрукты - ресторанное меню без похода в ресторан!',
-        21,
-        ".menu .container",
-        'menu__item'
-    ).render();
+        return await res.json();// возвращаем промис(трансформирует в json)
+    };
 
-
+    getResource('')
+        .then(data => {
+            data.forEach(({img, altimg, tittel, descr, price}) => {//деструктуризировать на несколько частей
+                new MenuCard(img, altimg, tittel, descr, price, '.menu.container').render();
+            });
+        });
+   
     // Forms
 
     const forms = document.querySelectorAll('form');//получаем все формы
@@ -228,10 +213,24 @@ window.addEventListener('DOMContentLoaded', () =>{//назначение гло�
     };
 
     forms.forEach(item =>{
-        postData(item);//обрабатываем события
+        bindPostData(item);//обрабатываем события
     });
 
-    function postData(form) {//функция постинг данных
+    const postData = async (url, data) => {//postData настраивает запрос
+        const res = await fetch(url, {//postData посылает запрос на сервер
+            method: "POST",
+            headers: {
+                'Content-type': 'application/json'
+             },
+            body: data 
+        });
+
+        return await res.json();// возвращаем промис(трансформирует в json)
+    };
+
+
+
+    function bindPostData(form) {//функция постинг данных
         form.addEventListener('submit', (e) => {//добавим обработчик события отправки формы заполенения по нажатию "отправить"
             e.preventDefault();//отменить стандартное поведение браузера, чтобы не перезагружался после отправки формы клиентом
 
@@ -246,18 +245,12 @@ window.addEventListener('DOMContentLoaded', () =>{//назначение гло�
  
             const formData = new FormData(form);//сбор данных из form
 
-            const object = {};//создаем пустой объект
-            formData.forEach(function(value, key){//переберем formData и все данные поместим в object и применяем коллбэк функцию
-                object[key] = value;//обращаемся к объекту
-            });
+            const json = JSON.stringify(Object.fromEntries(formData.entries()));//formData (инфа с формы) помещаем в массив массивов дальше в классический объект дальше в JSON
 
-            fetch('server.php', {
-                method: "POST",
-                headers: {
-                    'Content-type': 'application/json'
-                },
-                body: JSON.stringify(object)
-            }).then(data => data.text())
+            const obj = {a: 23, b: 50};
+            console.log(Object.entries(obj));
+
+            postData('server.php', JSON.stringify(object))//отправляем json на сервер
             .then(data => {
                 console.log(data);
                 showThanksModal(message.success);//сообщение об успешной операции
@@ -296,14 +289,18 @@ window.addEventListener('DOMContentLoaded', () =>{//назначение гло�
         }, 4000);  
     }
 
-    fetch('https://jsonplaceholder.typicode.com/posts', {
-        method: "POST",
-        body: JSON.stringify({name: 'Konsta'}),
-        headers: {
-            'Content-type': 'application/json'
-        }
-    })
-      .then(response => response.json())//возвращает промис
-      .then(json => console.log(json));
+    // fetch('https://jsonplaceholder.typicode.com/posts', {
+    //     method: "POST",
+    //     body: JSON.stringify({name: 'Konsta'}),
+    //     headers: {
+    //         'Content-type': 'application/json'
+    //     }
+    // })
+    //   .then(response => response.json())//возвращает промис
+    //   .then(json => console.log(json));
+    fetch('db.json')
+        .then(data => data.json())
+        .then(res => console.log(res));
+        
 });
 
