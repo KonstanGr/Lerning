@@ -66,9 +66,7 @@ window.addEventListener('DOMContentLoaded', () =>{//назначение гло�
     }
  }
  
- 
- 
- function setClock(selector, endtime) {
+  function setClock(selector, endtime) {
      const timer = document.querySelector(selector),
             days = timer.querySelector('#days'),
             hours = timer.querySelector('#hours'),
@@ -77,7 +75,6 @@ window.addEventListener('DOMContentLoaded', () =>{//назначение гло�
             timeInterval = setInterval(updateClock, 1000);
         
             updateClock();
-
     
      function updateClock() {
         const t = getTimeRemaining(endtime);
@@ -195,7 +192,7 @@ window.addEventListener('DOMContentLoaded', () =>{//назначение гло�
         return await res.json();// возвращаем промис(трансформирует в json)
     };
 
-    getResource('')
+    getResource('http://localhost:3000/menu')
         .then(data => {
             data.forEach(({img, altimg, tittel, descr, price}) => {//деструктуризировать на несколько частей
                 new MenuCard(img, altimg, tittel, descr, price, '.menu.container').render();
@@ -250,7 +247,7 @@ window.addEventListener('DOMContentLoaded', () =>{//назначение гло�
             const obj = {a: 23, b: 50};
             console.log(Object.entries(obj));
 
-            postData('server.php', JSON.stringify(object))//отправляем json на сервер
+            postData('http://localhost:3000/requests', JSON.stringify(object))//отправляем json на сервер
             .then(data => {
                 console.log(data);
                 showThanksModal(message.success);//сообщение об успешной операции
@@ -298,7 +295,7 @@ window.addEventListener('DOMContentLoaded', () =>{//назначение гло�
     // })
     //   .then(response => response.json())//возвращает промис
     //   .then(json => console.log(json));
-    fetch('db.json')
+    fetch('http://localhost:3000/menu')
         .then(data => data.json())
         .then(res => console.log(res));
         
