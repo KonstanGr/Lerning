@@ -1,31 +1,32 @@
 window.addEventListener('DOMContentLoaded', () =>{//назначение глобального обработчика событий
 
     //Tab
-    const tabs = document.querySelectorAll('.tabheader__item'),//пременная с перебором класса табов
-        tabsContent = document.querySelectorAll('.tabcontent'),//переменная с перебором класса контента
-        tabsParent = document.querySelector('.tabheader__items');//переменнная родитель с перебором класса табов, нужно получить один элемент поэтому без All
+    let tabs = document.querySelectorAll('.tabheader__item'),//пременная с перебором класса табов
+            tabsContent = document.querySelectorAll('.tabcontent'),//переменная с перебором класса контента
+            tabsParent = document.querySelector('.tabheader__items');//переменнная родитель с перебором класса табов, нужно получить один элемент поэтому без All
 
     function hideTabContent() {//создаем функцию скрыть все не нужные табы
-        tabsContent.forEach(item => {//Так как псевдомассив его нужно перебрать
-            item.classList.add('hide');
-            item.classList.remove('show', 'fade');// удаляем классы при переключении таба
-        });
+       
+    tabsContent.forEach(item => {//Так как псевдомассив его нужно перебрать
+        item.classList.add('hide');
+        item.classList.remove('show', 'fade');// удаляем классы при переключении таба
+    });
 
-        tabs.forEach(item => {//перебором у каждого таба удоляяем класс активности
-            item.classList.remove('tabheader__item_active');
-        });
+    tabs.forEach(item => {//перебором у каждого таба удоляяем класс активности
+        item.classList.remove('tabheader__item_active');
+    });
     }    
     
     function showTabContent(i = 0) {//функция показвает нам табы
-        tabsContent[i].classList.add('show', 'fade');//у выбранного элемента подключаем класс show и эффект класса fade
-        tabsContent[i].classList.remove('hide');//у выбранного элемента таба удаляем класс hide
-        tabs[i].classList.add('tabheader__item_active');//добавляем класс табу
+    tabsContent[i].classList.add('show', 'fade');//у выбранного элемента подключаем класс show и эффект класса fade
+    tabsContent[i].classList.remove('hide');//у выбранного элемента таба удаляем класс hide
+    tabs[i].classList.add('tabheader__item_active');//добавляем класс табу
     }
 
     hideTabContent();//Вызов функции скрыть
     showTabContent();//Вызов функции показать
 
-    tabsParent.addEventListener('click', (event) => {//делигирование события; добавляем обработчик события клика пользователя
+    tabsParent.addEventListener('click', function(event) {//делигирование события; добавляем обработчик события клика пользователя
         const target = event.target;//применяем переменную, чтобы упростить вызов это конструкции
 
         if (target && target.classList.contains('tabheader__item')){//проверяем точное нажатие на таб
@@ -67,14 +68,15 @@ window.addEventListener('DOMContentLoaded', () =>{//назначение гло�
  }
  
   function setClock(selector, endtime) {
-     const timer = document.querySelector(selector),
+     
+    const timer = document.querySelector(selector),
             days = timer.querySelector('#days'),
             hours = timer.querySelector('#hours'),
             minutes = timer.querySelector('#minutes'),
             seconds = timer.querySelector('#seconds'),
             timeInterval = setInterval(updateClock, 1000);
         
-            updateClock();
+        updateClock();
     
      function updateClock() {
         const t = getTimeRemaining(endtime);
@@ -118,7 +120,7 @@ window.addEventListener('DOMContentLoaded', () =>{//назначение гло�
         }//смещение кода Tab + Shift; сместить в право Tab (для себя инфа)   
         
     modal.addEventListener('click', (e) => {
-         if (e.target === modal || e.target.getAttribute('data-close') == '') {
+         if (e.target === modal || e.target.getAttribute('data-close') == "") {
            closeModal();
          }  
     });//обработчик события клика, который закрывает модальное окно при клике в область страницы
@@ -161,9 +163,10 @@ window.addEventListener('DOMContentLoaded', () =>{//назначение гло�
 
         render() {
             const element = document.createElement('div');
+            
             if(this.classes.length === 0) {//обращаемя к количесву элементов в массиве, если длина = 0, то
-                this.element = 'menu__item';//перезаписываем пустой элемент массива
-                element.classList.add(this.element);//то вставим дэфолтный класс
+                this.classes = 'menu__item';//перезаписываем пустой элемент массива
+                element.classList.add(this.classes);//то вставим дэфолтный класс
             }else{//иначе будет запускаться следующая строка
                 this.classes.forEach(className => element.classList.add(className));
             }//Реализация защиты от дурака, чтобы сохранить стоковый вид объекта
@@ -182,7 +185,7 @@ window.addEventListener('DOMContentLoaded', () =>{//назначение гло�
         }
     }
 
-    const getResource = async (url, data) => {
+    const getResource = async (url) => {
         const res = await fetch(url);
 
         if(!res.ok) {
@@ -194,10 +197,34 @@ window.addEventListener('DOMContentLoaded', () =>{//назначение гло�
 
     getResource('http://localhost:3000/menu')
         .then(data => {
-            data.forEach(({img, altimg, tittel, descr, price}) => {//деструктуризировать на несколько частей
-                new MenuCard(img, altimg, tittel, descr, price, '.menu.container').render();
+            data.forEach(({img, altimg, title, descr, price}) => {//деструктуризировать на несколько частей
+                new MenuCard(img, altimg, title, descr, price, '.menu .container').render();
             });
         });
+
+        // getResource('http://localhost:3000/menu')
+    //     .then(data => createCard(data)); // обращаемся к функции с датой
+
+    // function createCard(data) {// дата - массив
+    //     data.forEach(({img, altimg, title, descr, price}) => { //перебераем массив, деструкторизируем объекты на отдельные свойства
+    //         const element = document.createElement('div');// создаем новый див
+
+    //         element.classList.add("menu__item");// помещаем в новый класс
+
+    //         element.innerHTML = `// формирует верстку и вов внутрь помещает свойства пришедшие от сервера ${img}...
+    //             <img src=${img} alt=${altimg}>
+    //             <h3 class="menu__item-subtitle">${title}</h3>
+    //             <div class="menu__item-descr">${descr}</div>
+    //             <div class="menu__item-divider"></div>
+    //             <div class="menu__item-price">
+    //                 <div class="menu__item-cost">Цена:</div>
+    //                 <div class="menu__item-total"><span>${price}</span> грн/день</div>
+    //             </div>
+    //         `;
+    //         document.querySelector(".menu .container").append(element);// и аппендит карточку в какой нибудь элемент на странице
+    //     });
+    // }
+
    
     // Forms
 
@@ -214,7 +241,7 @@ window.addEventListener('DOMContentLoaded', () =>{//назначение гло�
     });
 
     const postData = async (url, data) => {//postData настраивает запрос
-        const res = await fetch(url, {//postData посылает запрос на сервер
+        let res = await fetch(url, {//postData посылает запрос на сервер
             method: "POST",
             headers: {
                 'Content-type': 'application/json'
@@ -225,29 +252,24 @@ window.addEventListener('DOMContentLoaded', () =>{//назначение гло�
         return await res.json();// возвращаем промис(трансформирует в json)
     };
 
-
-
     function bindPostData(form) {//функция постинг данных
         form.addEventListener('submit', (e) => {//добавим обработчик события отправки формы заполенения по нажатию "отправить"
             e.preventDefault();//отменить стандартное поведение браузера, чтобы не перезагружался после отправки формы клиентом
 
-            const statusMessage = document.createElement('img');//создаем новый динамический блок на странице HTML
+            let statusMessage = document.createElement('img');//создаем новый динамический блок на странице HTML
             statusMessage.src = message.loading;//создали изображение подставили атрибут src
             statusMessage.style.cssText = `
                 display: block;
                 margin: 0 auto;
         `;//помещаем сообщение, которое хотим показать; работает когда у клиента медленный интернет
-            form.append(statusMessage);//выводить сообщение на форме
+//form.append(statusMessage);//выводить сообщение на форме
             form.insertAdjacentElement('afterend', statusMessage);//чтобы спинер запускался после формы        
  
             const formData = new FormData(form);//сбор данных из form
 
             const json = JSON.stringify(Object.fromEntries(formData.entries()));//formData (инфа с формы) помещаем в массив массивов дальше в классический объект дальше в JSON
 
-            const obj = {a: 23, b: 50};
-            console.log(Object.entries(obj));
-
-            postData('http://localhost:3000/requests', JSON.stringify(object))//отправляем json на сервер
+            postData('http://localhost:3000/requests', json)//отправляем json на сервер
             .then(data => {
                 console.log(data);
                 showThanksModal(message.success);//сообщение об успешной операции
