@@ -320,6 +320,122 @@ window.addEventListener('DOMContentLoaded', () =>{//назначение гло�
     fetch('http://localhost:3000/menu')
         .then(data => data.json())
         .then(res => console.log(res));
+    
         
+//Slider
+
+const slides = document.querySelectorAll('.offer__slide'),
+         prev = document.querySelector('.offer__slider-prev'),
+         next = document.querySelector('.offer__slider-next'),
+         total = document.querySelector('#total'),//получим элемент
+         current = document.querySelector('#current'),//получим элемент - блок слайда
+         slidesWrapper = document.querySelector('offer__slider-wrapper'),//главная обертка
+         slidesField = document.querySelector('offer__slider-inner'),//поле со слайдами
+         width = window.getComputedStyle(slidesWrapper).width;//вытаскиваем из элемента ширину
+
+
+    let slideIndex = 1;//создаем индекс и подразумеваем - переменная будет меняться
+    let offset = 0;//отступ
+
+      if (slides.length < 10) {
+        total.textContent = `0${slides.length}`;
+        current.textContent = `0${slideIndex}`;
+    }else{
+        total.textContent = slides.length;
+        current.textContent = slideIndex;
+    }
+
+    slidesField.style.width = 100 * slides.length + '%';
+    slidesField.style.display = 'flex';
+    slidesField.style.transition = '0,5s all';
+    
+    slidesWrapper.style.overflow = 'hidden';
+    slides.forEach(slide => {
+        slide.style.width = width;
+    });
+
+    next.addEventListener('click', () => {
+        if(offset == +width.slice(0, width.length - 2) * (slides.length - 1)){//'500px'
+            offset = 0;
+        } else {
+            offset += +width.slice(0, width.length - 2);//смещение слайда
+        }
+       
+        slidesField.style.transform =`translateX(-${offset}px)`;
+
+        if (slideIndex == slides.length) {
+            slideIndex = 1;
+        } else {
+            slideIndex++;
+        }
+        
+        if (slides.length < 10) {
+            current.textContent = `0${slideIndex}`;
+        } else {
+            current.textContent = slideIndex;
+        }
+    });
+
+    prev.addEventListener('click', () => {
+        if(offset == 0){//'500px'
+            offset = +width.slice(0, width.length - 2) * (slides.length - 1);
+        } else {
+            offset -= +width.slice(0, width.length - 2);//смещение слайда
+        }
+        
+        slidesField.style.transform =`translateX(-${offset}px)`;
+
+        if (slideIndex == 1) {
+            slideIndex = slides.length;
+        } else {
+            slideIndex--;
+        }
+       
+        if (slides.length < 10) {
+            current.textContent = `0${slideIndex}`;
+        } else {
+            current.textContent = slideIndex;
+        }
+    });
+
+
+    // showSlides(slideIndex);//инициализация нужной нам структуры показа слайдов
+
+    // if (slides.length < 10) {
+    //     total.textContent = `0${slides.length}`;
+    // }else{
+    //     total.textContent = slides.length;
+    // }
+
+    // function showSlides(n) {
+    //     if (n > slides.length){
+    //         slideIndex = 1;
+    //     }
+
+    //     if (n < 1) {
+    //         slideIndex = slides.length;
+    //     }//блок кода выполняет зацикливание прокрутку слайдов
+    //     slides.forEach(item => item.style.display = 'none');//скрываем слайды
+
+    //     slides[slideIndex - 1].style.display = 'block';//показываем активный слайд
+
+    //     if (slides.length < 10) {
+    //         current.textContent = `0${slideIndex}`;
+    //     }else{
+    //         current.textContent = slideIndex;
+    //     }// теперь будет изменяться слай и счетчик номера показа слайда
+    // }
+
+    // function plusSlides(n) {
+    //     showSlides(slideIndex += n);//шагам по слайдам в увеличение
+    // }
+
+    // prev.addEventListener('click', () => {//назначаем обработчик события 'click'
+    //     plusSlides(-1);// пролистывание на предыдущий слайд
+    // });
+
+    // next.addEventListener('click', () => {//назначаем обработчик события 'click'
+    //     plusSlides(1);// пролистывание на следующий слайд
+    // });
 });
 
