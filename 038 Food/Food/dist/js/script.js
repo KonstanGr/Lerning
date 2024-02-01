@@ -355,12 +355,12 @@ window.addEventListener('DOMContentLoaded', () =>{//назначение гло�
         slide.style.width = width;
     });
 
-    slider.style.position = 'relative';
+    slider.style.position = 'relative';//устанавливаем позишн релатив
 
-    const indicators = document.createElement('ol'),
-         dots = [];
+    const indicators = document.createElement('ol'),//обертка всех точек с последующей стилизацией; ol - order list
+         dots = [];//истинный массив не псевдо 
 
-    indicators.classList.add('carousel-indicators');
+    indicators.classList.add('carousel-indicators');//назначим класс для индикатора, которого еще нет в css, но чтобы он был на элементе 
     indicators.style.cssText = `
         position: absolute;
         right: 0;
@@ -372,12 +372,12 @@ window.addEventListener('DOMContentLoaded', () =>{//назначение гло�
         margin-right: 15%;
         margin-left: 15%;
         list-style: none;
-    `;
-    slider.append(indicators);
+    `;//навешиваем css style
+    slider.append(indicators);// поместить обертку во внутрь слайдера
 
     for (let i = 0; i < slides.length; i++) {
-        const dot = document.createElement('li');
-        dot.setAttribute('data-slite-to', i + 1);
+        const dot = document.createElement('li');//содаем точки; li - list item
+        dot.setAttribute('data-slide-to', i + 1);//создаем атрибут первая точка идет к первому слайду
         dot.style.cssText = `
             box-sizing: content-box;
             flex: 0 1 auto;
@@ -392,13 +392,13 @@ window.addEventListener('DOMContentLoaded', () =>{//назначение гло�
             border-bottom: 10px solid transparent;
             opacity: .5;
             transition: opacity .6s ease;
-        `;
+        `;//навешиваем css стили; по другому можно создать класс и добавить в него все эти стили
         if (i == 0) {
             dot.style.opacity = 1;//активировали точку положение 1
         }
         indicators.append(dot);//зааппендили точку на страницу
-        dots.push(dot);
-    }
+        dots.push(dot);//помещаем зааппенденную точку в массив(массив с точками)
+    }//блок кода, который согласно количеству слайдов создает соответсвующее кол-во точек
 
 
     next.addEventListener('click', () => {
@@ -422,8 +422,8 @@ window.addEventListener('DOMContentLoaded', () =>{//назначение гло�
             current.textContent = slideIndex;
         }
 
-        dots.forEach(dot => dot.style.opacity = '.5');
-        dots[slideIndex - 1].style.opacity = 1;
+        dots.forEach(dot => dot.style.opacity = '.5');//берем массив дотс и перебераем через forEach делая не активные точки прозрачными на 50%
+        dots[slideIndex - 1].style.opacity = 1;//устанавливает почти не прозрачную активную точку
     });
 
     prev.addEventListener('click', () => {
@@ -451,14 +451,14 @@ window.addEventListener('DOMContentLoaded', () =>{//назначение гло�
         dots[slideIndex - 1].style.opacity = 1;
     });
 
-    dots.forEach(dot => {
+    dots.forEach(dot => {//вновь переберем дотс
         dot.addEventListener('click', (e) => {
             const slideTo = e.target.getAttribute('data-slide-to');
 
-          slideIndex = slideTo;
-          offset = +width.slice(0, width.length - 2) * (slideTo - 1);
+          slideIndex = slideTo;// тыкнули на 4 и slideIndex будет 4
+          offset = +width.slice(0, width.length - 2) * (slideTo - 1);//здесь нужно умножить общую ширину не на к-во слайдов, а на slideTo
 
-          slidesField.style.transform =`translateX(-${offset}px)`;
+          slidesField.style.transform =`translateX(-${offset}px)`;//сделаем смещение 
 
           if (slides.length < 10) {
             current.textContent = `0${slideIndex}`;
