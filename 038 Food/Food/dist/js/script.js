@@ -400,12 +400,15 @@ window.addEventListener('DOMContentLoaded', () =>{//назначение гло�
         dots.push(dot);//помещаем зааппенденную точку в массив(массив с точками)
     }//блок кода, который согласно количеству слайдов создает соответсвующее кол-во точек
 
+    function deleteNotDigits(str) {
+        return +str.replace(/\D/g, '');
+    }
 
     next.addEventListener('click', () => {
-        if(offset == +width.slice(0, width.length - 2) * (slides.length - 1)){//'500px'
+        if(offset == deleteNotDigits(width) * (slides.length - 1)){//'500px'
             offset = 0;
         } else {
-            offset += +width.slice(0, width.length - 2);//смещение слайда
+            offset += deleteNotDigits(width);//смещение слайда
         }
        
         slidesField.style.transform =`translateX(-${offset}px)`;
@@ -428,9 +431,9 @@ window.addEventListener('DOMContentLoaded', () =>{//назначение гло�
 
     prev.addEventListener('click', () => {
         if(offset == 0){//'500px'
-            offset = +width.slice(0, width.length - 2) * (slides.length - 1);
+            offset = deleteNotDigits(width) * (slides.length - 1);
         } else {
-            offset -= +width.slice(0, width.length - 2);//смещение слайда
+            offset -= deleteNotDigits(width);//смещение слайда
         }
         
         slidesField.style.transform =`translateX(-${offset}px)`;
@@ -456,7 +459,7 @@ window.addEventListener('DOMContentLoaded', () =>{//назначение гло�
             const slideTo = e.target.getAttribute('data-slide-to');
 
           slideIndex = slideTo;// тыкнули на 4 и slideIndex будет 4
-          offset = +width.slice(0, width.length - 2) * (slideTo - 1);//здесь нужно умножить общую ширину не на к-во слайдов, а на slideTo
+          offset = deleteNotDigits(width) * (slideTo - 1);//здесь нужно умножить общую ширину не на к-во слайдов, а на slideTo
 
           slidesField.style.transform =`translateX(-${offset}px)`;//сделаем смещение 
 
