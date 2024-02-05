@@ -516,7 +516,9 @@ window.addEventListener('DOMContentLoaded', () =>{//назначение гло�
     //Calc
 
   const result = document.querySelector('.calculating__result span');
-  let sex, height, weight, age, ratio;
+  let sex = 'female',//исходная позиция на верстке
+   height, weight, age,
+   ratio = 1.375;//исходное значение на верстке
 
   function calcTotal(){
     if(!sex || !height || !weight || !age || !ratio){
@@ -525,9 +527,9 @@ window.addEventListener('DOMContentLoaded', () =>{//назначение гло�
     }
 
     if(sex === 'female') {
-        result.textContent = (447.6 + (9.2 * weight) + (3.1 * height) - (4.3 * age)) * ratio;
+        result.textContent = Math.round((447.6 + (9.2 * weight) + (3.1 * height) - (4.3 * age)) * ratio);//формула подсчета данных с сайта https://fitseven.ru/zdorovie/metabolism/sutochnaya-norma-kaloriy
     }else{
-        result.textContent = (88.36 + (13.4 * weight) + (4.8 * height) - (5.7 * age)) * ratio;
+        result.textContent = Math.round((88.36 + (13.4 * weight) + (4.8 * height) - (5.7 * age)) * ratio);//округлили значения
     }
   }
 
@@ -536,20 +538,22 @@ window.addEventListener('DOMContentLoaded', () =>{//назначение гло�
   function getStaticInformation(perentSelector, activeClass) {
      const elemets = document.querySelectorAll(`${perentSelector} div`);//внутри родителя будем получать все дивы
      
-     document.querySelector(perentSelector).addEventListener('click', (e) => {//используем делегирование события
-        if (e.target.getAttribute('data-ratio')) {//если такой атрибут присутствует у объекта события
-            ratio = +e.target.getAttribute('data-ratio');// то мы устанавливаем переменную ratio для которой вытаскиваем e.target(физ.активность)
-        } else {
-            sex = e.target.getAttribute('id');//когда условие не сработает, то получаем id пола
-        }
-
-            elemets.forEach(elem => {
-            elem.classList.remove(activeClass);//убираем класс активности у всех эелементов 
-        });
-
-        e.tareget.classList.add(activeClass);//назначаем класс активности тому, который нужен
-
-        calcTotal();
+     elemets.forEach(elem => {
+        elem.addEventListener('click', (e) => {//используем делегирование события
+            if (e.target.getAttribute('data-ratio')) {//если такой атрибут присутствует у объекта события
+                ratio = +e.target.getAttribute('data-ratio');// то мы устанавливаем переменную ratio для которой вытаскиваем e.target(физ.активность)
+            } else {
+                sex = e.target.getAttribute('id');//когда условие не сработает, то получаем id пола
+            }
+    
+                elemets.forEach(elem => {
+                elem.classList.remove(activeClass);//убираем класс активности у всех эелементов 
+            });
+    
+            e.target.classList.add(activeClass);//назначаем класс активности тому, который нужен
+    
+            calcTotal();
+         });
      });
   }
 
@@ -567,13 +571,14 @@ window.addEventListener('DOMContentLoaded', () =>{//назначение гло�
             case 'weight':
                 weight = +input.value;
                 break;
-                case 'age':
-                    age = +input.value;
-                    break;
+            case 'age':
+                age = +input.value;
+                break;
        }   
+
+       calcTotal();
     });
 
-    calcTotal();
   }
 
   getDynamicInformation('#height');
