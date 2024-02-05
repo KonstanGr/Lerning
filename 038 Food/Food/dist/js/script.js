@@ -330,8 +330,8 @@ window.addEventListener('DOMContentLoaded', () =>{//назначение гло�
          next = document.querySelector('.offer__slider-next'),
          total = document.querySelector('#total'),//получим элемент
          current = document.querySelector('#current'),//получим элемент - блок слайда
-         slidesWrapper = document.querySelector('offer__slider-wrapper'),//главная обертка
-         slidesField = document.querySelector('offer__slider-inner'),//поле со слайдами
+         slidesWrapper = document.querySelector('.offer__slider-wrapper'),//главная обертка
+         slidesField = document.querySelector('.offer__slider-inner'),//поле со слайдами
          width = window.getComputedStyle(slidesWrapper).width;//вытаскиваем из элемента ширину
 
 
@@ -512,5 +512,72 @@ window.addEventListener('DOMContentLoaded', () =>{//назначение гло�
     // next.addEventListener('click', () => {//назначаем обработчик события 'click'
     //     plusSlides(1);// пролистывание на следующий слайд
     // });
+
+    //Calc
+
+  const result = document.querySelector('.calculating__result span');
+  let sex, height, weight, age, ratio;
+
+  function calcTotal(){
+    if(!sex || !height || !weight || !age || !ratio){
+        result.textContent = '____';
+        return;
+    }
+
+    if(sex === 'female') {
+        result.textContent = (447.6 + (9.2 * weight) + (3.1 * height) - (4.3 * age)) * ratio;
+    }else{
+        result.textContent = (88.36 + (13.4 * weight) + (4.8 * height) - (5.7 * age)) * ratio;
+    }
+  }
+
+  calcTotal();
+
+  function getStaticInformation(perentSelector, activeClass) {
+     const elemets = document.querySelectorAll(`${perentSelector} div`);//внутри родителя будем получать все дивы
+     
+     document.querySelector(perentSelector).addEventListener('click', (e) => {//используем делегирование события
+        if (e.target.getAttribute('data-ratio')) {//если такой атрибут присутствует у объекта события
+            ratio = +e.target.getAttribute('data-ratio');// то мы устанавливаем переменную ratio для которой вытаскиваем e.target(физ.активность)
+        } else {
+            sex = e.target.getAttribute('id');//когда условие не сработает, то получаем id пола
+        }
+
+            elemets.forEach(elem => {
+            elem.classList.remove(activeClass);//убираем класс активности у всех эелементов 
+        });
+
+        e.tareget.classList.add(activeClass);//назначаем класс активности тому, который нужен
+
+        calcTotal();
+     });
+  }
+
+  getStaticInformation('#gender','calculating__choose-item_active');
+  getStaticInformation('.calculating__choose_big','calculating__choose-item_active');
+
+  function getDynamicInformation(selector) {//функция будет обрабатывать каждый отдельный input строка:(ваша конституция)
+    const input = document.querySelector(selector);//получаем input, который ввел пользователь в поле
+
+    input.addEventListener('input', () =>{//навесим обработчик события input, чтобы отследить ввод данных в поле от пользователя
+       switch(input.getAttribute('id')){//запустим метод switch case, который проверит соовтетствие строки
+            case 'height'://если это действительно input с ростом то
+                height = +input.value;//берем эту переменную и записываем в неё значение, которое ввел пользователь
+                break;//остановили
+            case 'weight':
+                weight = +input.value;
+                break;
+                case 'age':
+                    age = +input.value;
+                    break;
+       }   
+    });
+
+    calcTotal();
+  }
+
+  getDynamicInformation('#height');
+  getDynamicInformation('#weight');
+  getDynamicInformation('#age');
 });
 
