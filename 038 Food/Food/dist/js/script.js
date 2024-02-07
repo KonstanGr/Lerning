@@ -533,8 +533,8 @@ window.addEventListener('DOMContentLoaded', () =>{//назначение гло�
     localStorage.setItem('ratio', 1.375);//и при этом установим в localStorage значения ratio - 1.375
   }
 
-  function calcTotal(){
-    if(!sex || !height || !weight || !age || !ratio){
+  function calcTotal() {
+    if (!sex || !height || !weight || !age || !ratio){
         result.textContent = '____';
         return;
     }
@@ -566,9 +566,9 @@ window.addEventListener('DOMContentLoaded', () =>{//назначение гло�
   initLocalSettings('.calculating__choose_big div','calculating__choose-item_active');
 
   function getStaticInformation(selector, activeClass) {
-     const elemets = document.querySelectorAll(selector);//внутри родителя будем получать все дивы
+     const elements = document.querySelectorAll(selector);//внутри родителя будем получать все дивы
      
-     elemets.forEach(elem => {
+     elements.forEach(elem => {
         elem.addEventListener('click', (e) => {//используем делегирование события
             if (e.target.getAttribute('data-ratio')) {//если такой атрибут присутствует у объекта события
                 ratio = +e.target.getAttribute('data-ratio');// то мы устанавливаем переменную ratio для которой вытаскиваем e.target(физ.активность)
@@ -578,7 +578,7 @@ window.addEventListener('DOMContentLoaded', () =>{//назначение гло�
                 localStorage.setItem('sex', e.target.getAttribute('id'));//сохраняем значения введеные пользователем
             }
     
-            elemets.forEach(elem => {
+            elements.forEach(elem => {
                 elem.classList.remove(activeClass);//убираем класс активности у всех эелементов 
             });
     
