@@ -1,17 +1,16 @@
-function tabs(){
+function tabs() {
     //Tab
-
-    const tabs = document.querySelectorAll('.tabheader__item'),//пременная с перебором класса табов
+    let tabs = document.querySelectorAll('.tabheader__item'),//пременная с перебором класса табов
     tabsContent = document.querySelectorAll('.tabcontent'),//переменная с перебором класса контента
     tabsParent = document.querySelector('.tabheader__items');//переменнная родитель с перебором класса табов, нужно получить один элемент поэтому без All
 
-    function hideTabContent() {//создаем функцию скрыть все не нужные табы   
+    function hideTabContent() {//создаем функцию скрыть все не нужные табы
         tabsContent.forEach(item => {//Так как псевдомассив его нужно перебрать
             item.classList.add('hide');
             item.classList.remove('show', 'fade');// удаляем классы при переключении таба
         });
 
-    tabs.forEach(item => {//перебором у каждого таба удоляяем класс активности
+    tabs.forEach(item => {//перебором у каждого таба удаляем класс активности
         item.classList.remove('tabheader__item_active');
         });
     }    
