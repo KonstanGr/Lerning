@@ -219,6 +219,113 @@ module.exports = cards;
 
 /***/ }),
 
+/***/ "./js/modules/forms.js":
+/*!*****************************!*\
+  !*** ./js/modules/forms.js ***!
+  \*****************************/
+/***/ ((module) => {
+
+function forms(){
+    // Forms
+
+    const forms = document.querySelectorAll('form');//получаем все формы
+
+    const message = {//объект с свойствми сообщений при различных ситуациях
+        loading: 'img/form/spinner.svg',
+        success: 'Спасибо! Скоро мы с вами свяжемся',
+        failure: 'Что-то пошло не так...'
+    };
+
+    forms.forEach(item =>{
+        bindPostData(item);//обрабатываем события
+    });
+
+    const postData = async (url, data) => {//postData настраивает запрос
+        let res = await fetch(url, {//postData посылает запрос на сервер
+            method: "POST",
+            headers: {
+                'Content-type': 'application/json'
+             },
+            body: data 
+        });
+
+        return await res.json();// возвращаем промис(трансформирует в json)
+    };
+
+    function bindPostData(form) {//функция постинг данных
+        form.addEventListener('submit', (e) => {//добавим обработчик события отправки формы заполенения по нажатию "отправить"
+            e.preventDefault();//отменить стандартное поведение браузера, чтобы не перезагружался после отправки формы клиентом
+
+            let statusMessage = document.createElement('img');//создаем новый динамический блок на странице HTML
+            statusMessage.src = message.loading;//создали изображение подставили атрибут src
+            statusMessage.style.cssText = `
+                display: block;
+                margin: 0 auto;
+        `;//помещаем сообщение, которое хотим показать; работает когда у клиента медленный интернет
+//form.append(statusMessage);//выводить сообщение на форме
+            form.insertAdjacentElement('afterend', statusMessage);//чтобы спинер запускался после формы        
+ 
+            const formData = new FormData(form);//сбор данных из form
+
+            const json = JSON.stringify(Object.fromEntries(formData.entries()));//formData (инфа с формы) помещаем в массив массивов дальше в классический объект дальше в JSON
+
+            postData('http://localhost:3000/requests', json)//отправляем json на сервер
+            .then(data => {
+                console.log(data);
+                showThanksModal(message.success);//сообщение об успешной операции
+                statusMessage.remove();
+            }).catch(() => {
+                showThanksModal(message.failure);//выводим сообщение об ошибке
+            }).finally(() => {
+                form.reset();//очищаем форму
+            });
+ 
+        });
+    }
+
+    function showThanksModal(message) {
+        const prevModalDialog = document.querySelector('.modal__dialog');//получим блок и поместим в переменную
+
+        prevModalDialog.classList.add('hide');//скроем предыдущий контент
+        openModal();//функция отвечает за открытие модальных окон
+
+
+        const thanksModal = document.createElement('div');//начинаем создавать блок нового контента
+        thanksModal.classList.add('modal__dialog');
+        thanksModal.innerHTML = `
+            <div class="modal__content">
+                <div class="modal__close" data-close>×</div>
+                <div class="modal__title">${message}</div>
+            </div>
+        `; 
+
+        document.querySelector('.modal').append(thanksModal);
+        setTimeout(() => {//используем асинхронную операцию
+            thanksModal.remove();
+            prevModalDialog.classList.add('show');
+            prevModalDialog.classList.remove('hide');
+            closeModal();//закроем модальное окно
+        }, 4000);  
+    }
+
+    // fetch('https://jsonplaceholder.typicode.com/posts', {
+    //     method: "POST",
+    //     body: JSON.stringify({name: 'Konsta'}),
+    //     headers: {
+    //         'Content-type': 'application/json'
+    //     }
+    // })
+    //   .then(response => response.json())//возвращает промис
+    //   .then(json => console.log(json));
+    fetch('http://localhost:3000/menu')
+        .then(data => data.json())
+        .then(res => console.log(res));
+}
+
+module.exports = forms;
+
+/***/ }),
+
 /***/ "./js/modules/modal.js":
 /*!*****************************!*\
   !*** ./js/modules/modal.js ***!
@@ -488,20 +595,19 @@ module.exports = slider;
   \****************************/
 /***/ ((module) => {
 
-function tabs(){
+function tabs() {
     //Tab
-
-    const tabs = document.querySelectorAll('.tabheader__item'),//пременная с перебором класса табов
+    let tabs = document.querySelectorAll('.tabheader__item'),//пременная с перебором класса табов
     tabsContent = document.querySelectorAll('.tabcontent'),//переменная с перебором класса контента
     tabsParent = document.querySelector('.tabheader__items');//переменнная родитель с перебором класса табов, нужно получить один элемент поэтому без All
 
-    function hideTabContent() {//создаем функцию скрыть все не нужные табы   
+    function hideTabContent() {//создаем функцию скрыть все не нужные табы
         tabsContent.forEach(item => {//Так как псевдомассив его нужно перебрать
             item.classList.add('hide');
             item.classList.remove('show', 'fade');// удаляем классы при переключении таба
         });
 
-    tabs.forEach(item => {//перебором у каждого таба удоляяем класс активности
+    tabs.forEach(item => {//перебором у каждого таба удаляем класс активности
         item.classList.remove('tabheader__item_active');
         });
     }    
@@ -530,6 +636,7 @@ function tabs(){
 }
 
 module.exports = tabs;
+
 
 /***/ }),
 
@@ -639,7 +746,7 @@ window.addEventListener('DOMContentLoaded', () =>{//назначение гло�
           modal = __webpack_require__(/*! ./modules/modal */ "./js/modules/modal.js"),
           timer = __webpack_require__(/*! ./modules/timer */ "./js/modules/timer.js"),
           cards = __webpack_require__(/*! ./modules/cards */ "./js/modules/cards.js"),
-          forms = __webpack_require__(Object(function webpackMissingModule() { var e = new Error("Cannot find module './modaules/forms'"); e.code = 'MODULE_NOT_FOUND'; throw e; }())),
+          forms = __webpack_require__(/*! ./modules/forms */ "./js/modules/forms.js"),
           slider = __webpack_require__(/*! ./modules/slider */ "./js/modules/slider.js"),
           calc = __webpack_require__(/*! ./modules/calc */ "./js/modules/calc.js");
 

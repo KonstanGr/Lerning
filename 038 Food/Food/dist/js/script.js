@@ -3,7 +3,7 @@ window.addEventListener('DOMContentLoaded', () =>{//назначение гло�
           modal = require('./modules/modal'),
           timer = require('./modules/timer'),
           cards = require('./modules/cards'),
-          forms = require('./modaules/forms'),
+          forms = require('./modules/forms'),
           slider = require('./modules/slider'),
           calc = require('./modules/calc');
 
