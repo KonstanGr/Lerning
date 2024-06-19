@@ -1,7 +1,5 @@
-function timer(){
-    //Timer
-
-    const deadLine = '2024-05-20';
+function timer(id, deadLine){
+    
 
     function getTimeRemaining(endtime){
         const t = Date.parse(endtime) - Date.parse(new Date()),//разница дедлайна от текущей даты
@@ -53,7 +51,7 @@ function timer(){
 
  }
 
-    setClock('.timer', deadLine);
+    setClock(id, deadLine);
 }
 
-module.exports = timer;
+export default timer;

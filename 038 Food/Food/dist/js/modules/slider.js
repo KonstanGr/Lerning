@@ -1,19 +1,18 @@
-function slider(){
+function slider({container, slide, nextArrow, prevArrow, totalCounter, currentCounter, wrapper, field}){
     //Slider
-
-    const slides = document.querySelectorAll('.offer__slide'),
-         slider =document.querySelector('.offer__slider'),
-         prev = document.querySelector('.offer__slider-prev'),
-         next = document.querySelector('.offer__slider-next'),
-         total = document.querySelector('#total'),//получим элемент
-         current = document.querySelector('#current'),//получим элемент - блок слайда
-         slidesWrapper = document.querySelector('.offer__slider-wrapper'),//главная обертка
-         slidesField = document.querySelector('.offer__slider-inner'),//поле со слайдами
-         width = window.getComputedStyle(slidesWrapper).width;//вытаскиваем из элемента ширину
-
 
     let slideIndex = 1;//создаем индекс и подразумеваем - переменная будет меняться
     let offset = 0;//отступ
+
+    const slides = document.querySelectorAll(slide),
+         slider =document.querySelector(container),
+         prev = document.querySelector(prevArrow),
+         next = document.querySelector(nextArrow),
+         total = document.querySelector(totalCounter),//получим элемент
+         current = document.querySelector(currentCounter),//получим элемент - блок слайда
+         slidesWrapper = document.querySelector(wrapper),//главная обертка
+         slidesField = document.querySelector(field),//поле со слайдами
+         width = window.getComputedStyle(slidesWrapper).width;//вытаскиваем из элемента ширину
 
       if (slides.length < 10) {
         total.textContent = `0${slides.length}`;
@@ -191,4 +190,4 @@ function slider(){
     // });
 }
 
-module.exports = slider;
+export default slider;

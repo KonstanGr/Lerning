@@ -1,7 +1,10 @@
-function forms(){
+import { closeModal, openModal } from "./modal";
+import {postData} from '../services/services';
+
+function forms(formSelector, modalTimerId){
     // Forms
 
-    const forms = document.querySelectorAll('form');//получаем все формы
+    const forms = document.querySelectorAll(formSelector);//получаем все формы
 
     const message = {//объект с свойствми сообщений при различных ситуациях
         loading: 'img/form/spinner.svg',
@@ -13,17 +16,7 @@ function forms(){
         bindPostData(item);//обрабатываем события
     });
 
-    const postData = async (url, data) => {//postData настраивает запрос
-        let res = await fetch(url, {//postData посылает запрос на сервер
-            method: "POST",
-            headers: {
-                'Content-type': 'application/json'
-             },
-            body: data 
-        });
 
-        return await res.json();// возвращаем промис(трансформирует в json)
-    };
 
     function bindPostData(form) {//функция постинг данных
         form.addEventListener('submit', (e) => {//добавим обработчик события отправки формы заполенения по нажатию "отправить"
@@ -60,7 +53,7 @@ function forms(){
         const prevModalDialog = document.querySelector('.modal__dialog');//получим блок и поместим в переменную
 
         prevModalDialog.classList.add('hide');//скроем предыдущий контент
-        openModal();//функция отвечает за открытие модальных окон
+        openModal('.modal', modalTimerId);//функция отвечает за открытие модальных окон
 
 
         const thanksModal = document.createElement('div');//начинаем создавать блок нового контента
@@ -77,7 +70,7 @@ function forms(){
             thanksModal.remove();
             prevModalDialog.classList.add('show');
             prevModalDialog.classList.remove('hide');
-            closeModal();//закроем модальное окно
+            closeModal('.modal');//закроем модальное окно
         }, 4000);  
     }
 
@@ -90,9 +83,10 @@ function forms(){
     // })
     //   .then(response => response.json())//возвращает промис
     //   .then(json => console.log(json));
-    fetch('http://localhost:3000/menu')
-        .then(data => data.json())
-        .then(res => console.log(res));
+    
+    // fetch('http://localhost:3000/menu')
+    //     .then(data => data.json())
+    //     .then(res => console.log(res));
 }
 
-module.exports = forms;
+export default forms;
