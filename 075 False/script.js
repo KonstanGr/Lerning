@@ -4,8 +4,12 @@ try {
     console.log('Normal');
     console.log(a);
     console.log('result');
-} catch(e) {
-    console.log('error');
+} catch(error) {
+    console.log(error);
+    console.log(error.message);
+    console.log(error.stack);
+} finally {
+    
 }
 
 console.log('Still normal');
